@@ -1,0 +1,238 @@
+body {
+  margin: 0;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  justify-content: center;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/*cabeçalho*/
+.head {
+    height: auto;
+    min-height: 10%;
+    width: 95%;
+    max-width: 1395px;
+    padding: 15px;
+    outline-width: 10px;
+    outline-style: outset;
+    border-radius: 25px;
+    background-color: antiquewhite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+/*botões linhas*/
+/*botões linhas*/
+.b-linhas {
+    margin: 20px auto;
+    height: auto;           /* CORRIGIDO: Força a caixa bege a se ajustar à altura dos botões */
+    min-height: 200px;      /* Altura mínima segura caso tenha poucos botões */
+    width: 95%;
+    max-width: 1395px;
+    border-radius: 10px;
+    outline-style: outset;
+    background-color: antiquewhite;
+    padding: 25px;
+    box-sizing: border-box; 
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 20px; 
+    justify-content: center;
+    align-content: flex-start; /* CORRIGIDO: Alinha as linhas de botões de cima para baixo sem cortar */
+}
+
+.b-linhas a {
+    text-decoration: none;
+    color: black;
+    display: flex;
+    justify-content: center;
+}
+
+/*botão individual*/
+.b {
+    display: flex;
+    width: 200px; 
+    margin: 0; 
+    height: 70px;
+    background-color: whitesmoke;
+    border-radius: 20px;
+    outline-style: outset;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.b input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.b label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #000;
+  border-radius: 15px;
+  cursor: pointer;
+  text-align: center;
+  font-weight: bold;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+.b input[type="radio"]:checked + label {
+  background-color: rgb(210, 210, 210);
+  border-color: #0056b3;
+}
+
+/*botões defeitos - CORRIGIDO: centralização vertical e horizontal dos blocos internos */
+.b-defeitos {
+    height: auto;
+    min-height: 100px;
+    width: 95%;
+    max-width: 1395px;
+    margin: 20px auto;
+    border-radius: 10px;
+    outline-style: outset;
+    background-color: antiquewhite;
+    padding: 25px;
+    box-sizing: border-box; 
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+.b-defeitos a {
+    text-decoration: none;
+    color: black;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+
+/*botão enviar*/
+.send {
+    margin: 0; 
+    width: 100%;
+    max-width: 300px;
+    height: 70px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 15px;
+    outline-style: outset;
+    outline-width: 2px;
+    outline-color: black;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 35px;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+/*botão voltar*/
+.back {
+    margin: 0; 
+    width: 100%;
+    max-width: 300px;
+    height: 70px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 15px;
+    outline-style: outset;
+    outline-color: black;
+    align-items: center;    
+    justify-content: center;
+    display: flex;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+/*área botões Voltar e Enviar - CORRIGIDO: Centraliza a dupla de botões perfeitamente no tablet */
+.b-space {
+    height: auto;
+    width: 95%;
+    max-width: 1395px;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap; 
+    gap: 60px; /* Ajustado para manter um espaçamento limpo entre Voltar e Enviar */
+    justify-content: center;
+    align-items: center;
+}
+
+.b-space a {
+    text-decoration: none;
+    color: black;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-width: 300px; /* Garante tamanho idêntico para os dois links */
+}
+
+/*área garrafa e preforma*/
+.input-garrafa {
+    width: 95%;
+    max-width: 1395px;
+    margin: 20px auto;
+    height: auto;
+    padding: 25px;
+    background-color: antiquewhite;
+    margin-top: 20px;
+    align-items: center;
+    border-radius: 15px;
+    outline-style: outset;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap; 
+    gap: 40px;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+#input-garrafa, #input-preforma {
+    height: 50px;
+    width: 100%;
+    max-width: 400px; 
+    text-align: center;
+    font-size: 20px;
+    box-sizing: border-box;
+}
+
+.campo-grupo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 0px;
+}
+
+.campo-grupo label {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+#select-turno {
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #000;
+  border-radius: 12px;
+  background-color: white;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+}
