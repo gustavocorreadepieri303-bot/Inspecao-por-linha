@@ -30,7 +30,7 @@ body {
 /*botões linhas*/
 .b-linhas {
     margin: 20px auto;
-    height: auto;           /* CORRIGIDO: Força a caixa bege a se ajustar à altura dos botões */
+    height: fit-content;           /* CORRIGIDO: Força a caixa bege a se ajustar à altura dos botões */
     min-height: 200px;      /* Altura mínima segura caso tenha poucos botões */
     width: 95%;
     max-width: 1395px;
