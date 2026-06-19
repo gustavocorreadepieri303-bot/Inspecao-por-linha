@@ -1,6 +1,11 @@
 .body {
-    height: auto;
-    widht: 1920px;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza horizontalmente tudo na tela touch */
+    justify-content: center;
+    min-height: 100vh;
     background-color: whitesmoke;
 }
 
