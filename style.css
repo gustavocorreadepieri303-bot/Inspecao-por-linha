@@ -29,8 +29,8 @@ body {
 /*botões linhas*/
 .b-linhas {
     margin: 20px auto;
-    height: auto; 
-    min-height: 470px;
+    height: auto;           /* CORRIGIDO: Força a caixa bege a se ajustar à altura dos botões */
+    min-height: 200px;      /* Altura mínima segura caso tenha poucos botões */
     width: 95%;
     max-width: 1395px;
     border-radius: 10px;
@@ -44,7 +44,7 @@ body {
     flex-wrap: wrap;
     gap: 20px; 
     justify-content: center;
-    align-content: center;
+    align-content: flex-start; /* CORRIGIDO: Alinha as linhas de botões de cima para baixo sem cortar */
 }
 
 .b-linhas a {
