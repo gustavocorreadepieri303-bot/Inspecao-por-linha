@@ -33,6 +33,9 @@
                     <option value="D">Turno D</option>
                 </select>
             </div>
+            <div class="realizado"><label for="real.por">Realizado Por:</label>
+                <input type="text" id="input-name" name="realizado_por" placeholder="Seu Nome" required>
+            </div>
         </div>
         
         <!-- Botões de defeitos (Ajustados name e values para o banco de dados) -->
@@ -52,6 +55,10 @@
             <div class="b">
                 <input type="radio" id="def-tonalidade" name="defeito_selected" value="tonalidade_garrafa">
                 <label for="def-tonalidade">Tonalidade da Garrafa</label>
+            </div>
+            <div class="b">
+                <input type="radio" id="def-fundo" name="defeito_selected" value="deformacao_fundo">
+                <label for="def-fundo">Deformação No Fundo</label>
             </div>
             <div class="b">
                 <input type="radio" id="status-ok" name="defeito_selected" value="conforme">
