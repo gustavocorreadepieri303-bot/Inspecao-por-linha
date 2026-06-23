@@ -5,26 +5,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Linha 9</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* ESTILOS DA JANELA DE AVISO PERSONALIZADA (MODAL) */
+        .modal-alerta {
+            display: none; 
+            position: fixed; 
+            z-index: 9999; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            background-color: rgba(0,0,0,0.7); 
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-conteudo {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            font-family: Arial, sans-serif;
+        }
+        .modal-conteudo h2 {
+            color: #d9534f;
+            margin-top: 0;
+            font-size: 24px;
+        }
+        .modal-conteudo p {
+            font-size: 18px;
+            color: #333;
+            margin: 20px 0;
+        }
+        .modal-btn {
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .modal-btn:hover {
+            background-color: #c9302c;
+        }
+    </style>
 </head>
 <body class="body">
 
-    <!-- Cabeçalho -->
+    <audio id="audio-alarme" src="bip.mp3" preload="auto"></audio>
+
+    <div id="meu-modal-alerta" class="modal-alerta">
+        <div class="modal-conteudo">
+            <h2>⚠️ ATENÇÃO!</h2>
+            <p id="texto-alerta-dinamico">Já se passaram 30 minutos desde a última inspeção!</p>
+            <button class="modal-btn" onclick="fecharAvisoEPararSom()">OK, entendi</button>
+        </div>
+    </div>
+
     <div class="head"><h1>Inspeção de qualidade - Linha 9</h1></div>
 
-    <!-- Adicionamos o evento onsubmit para enviar os dados via JavaScript sem recarregar -->
     <form id="form-inspecao" onsubmit="enviarParaPlanilha(event)">
-        
-        <!-- Campo oculto que guarda qual linha foi selecionada -->
         <input type="hidden" id="input-linha-producao" name="linha_origem" value="">
         
-        <!-- Garrafa, preforma e turno -->
         <div class="input-garrafa">
             <input type="text" id="input-garrafa" name="nome_garrafa" placeholder="Nome Garrafa" required>
             <input type="text" id="input-preforma" name="numero_preforma" placeholder="Numero Preforma" required>
             
             <div class="campo-grupo">
                 <label for="select-turno">Turno:</label>
-                <!-- Ajustado o name para bater com o Script do Google -->
                 <select id="select-turno" name="turno_trabalho" required>
                     <option value="">-- Selecione o Turno --</option>
                     <option value="A">Turno A</option>
@@ -38,7 +91,6 @@
             </div>
         </div>
         
-        <!-- Botões de defeitos (Ajustados name e values para o banco de dados) -->
         <div class="b-defeitos">
             <div class="b">
                 <input type="radio" id="def-gargalo" name="defeito_selected" value="deformacao_gargalo" required>
@@ -66,87 +118,127 @@
             </div>
         </div>
         
-        <!-- Área de botões inferiores -->
         <div class="b-space">
-            <!-- Botão voltar -->
             <a href="index.html" style="text-decoration: none;"><div class="back"><h1>Voltar</h1></div></a>
-            <!-- Botão enviar (removida a tag h1 interna para evitar bugs no clique) -->
             <button type="submit" class="send">Enviar</button>
         </div>
-
     </form>
 
-    <!-- Todos os scripts juntos no final do arquivo para garantir estabilidade -->
     <script>
-    // 1. Recupera o nome da linha vindo da tela anterior
     document.addEventListener("DOMContentLoaded", function() {
         const linhaGuardada = localStorage.getItem('linhaSelecionada');
         if (linhaGuardada) {
             document.getElementById('input-linha-producao').value = linhaGuardada;
         } else {
-            document.getElementById('input-linha-producao').value = "Linha 9"; // Fallback de segurança
+            document.getElementById('input-linha-producao').value = "Linha 9"; 
         }
     });
 
-    // 2. Faz o envio em formato POST legítimo para ativar o doPost do Apps Script
     function enviarParaPlanilha(event) {
-    event.preventDefault(); // Impede o navegador de atualizar a página
-    
-    // Certifique-se de manter sua URL oficial aqui dentro das aspas
-    let urlScript = "https://script.google.com/macros/s/AKfycbzN8WUhy3A51tejBugQDWZMhzi3OmdmuroNSPiQ32wRCxC2GxyPUgT94AfdgofmWjVO/exec"; 
-    const formulario = document.getElementById('form-inspecao');
-    
-    let linhaGuardada = localStorage.getItem('linhaSelecionada');
-    if (!linhaGuardada) {
-        linhaGuardada = "Linha 9"; 
+        event.preventDefault(); 
+        
+        let urlScript = "https://script.google.com/macros/s/AKfycbzN8WUhy3A51tejBugQDWZMhzi3OmdmuroNSPiQ32wRCxC2GxyPUgT94AfdgofmWjVO/exec"; 
+        const formulario = document.getElementById('form-inspecao');
+        
+        let linhaGuardada = localStorage.getItem('linhaSelecionada');
+        if (!linhaGuardada) { lignhaGuardada = "Linha 9"; }
+
+        const nomeGarrafa = document.getElementById('input-garrafa').value;
+        const numeroPreforma = document.getElementById('input-preforma').value;
+        const turnoTrabalho = document.getElementById('select-turno').value;
+        const realizadoPor = document.getElementById('input-name').value;
+        const defeitoMarcado = formulario.querySelector('input[name="defeito_selected"]:checked');
+        const defeitoSelected = defeitoMarcado ? defeitoMarcado.value : "";
+        
+        const dadosCorpo = new URLSearchParams();
+        dadosCorpo.append("linha_origem", linhaGuardada);
+        dadosCorpo.append("turno_trabalho", turnoTrabalho);
+        dadosCorpo.append("nome_garrafa", nomeGarrafa);
+        dadosCorpo.append("numero_preforma", numeroPreforma);
+        dadosCorpo.append("realizado_por", realizadoPor);
+        dadosCorpo.append("defeito_selected", defeitoSelected);
+
+        const botao = document.querySelector('.send');
+        botao.innerText = "Enviando...";
+        botao.disabled = true;
+
+        fetch(urlScript, {
+            method: 'POST',
+            mode: 'no-cors', 
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: dadosCorpo.toString()
+        })
+        .then(() => {
+            alert("Inspeção registrada com sucesso!");
+            resetarTemporizadorInspecao();
+            const radios = formulario.querySelectorAll('input[type="radio"]');
+            radios.forEach(radio => radio.checked = false);
+            botao.innerText = "Enviar";
+            botao.disabled = false;
+        })
+        .catch(erro => {
+            alert("Erro crítico de conexão.");
+            botao.innerText = "Enviar";
+            botao.disabled = false;
+        });
     }
 
-    const nomeGarrafa = document.getElementById('input-garrafa').value;
-    const numeroPreforma = document.getElementById('input-preforma').value;
-    const turnoTrabalho = document.getElementById('select-turno').value;
-    const realizadoPor = document.getElementById('input-name').value;
-    const defeitoMarcado = formulario.querySelector('input[name="defeito_selected"]:checked');
-    const defeitoSelected = defeitoMarcado ? defeitoMarcado.value : "";
-    const dadosCorpo = new URLSearchParams();
-    dadosCorpo.append("linha_origem", linhaGuardada);
-    dadosCorpo.append("turno_trabalho", turnoTrabalho);
-    dadosCorpo.append("nome_garrafa", nomeGarrafa);
-    dadosCorpo.append("numero_preforma", numeroPreforma);
-    dadosCorpo.append("realizado_por", realizadoPor);
-    dadosCorpo.append("defeito_selected", defeitoSelected);
+    // CONFIGURAÇÃO DO ALERTA (CRONÓMETRO)
+    const TEMPO_LIMITE_MINUTOS = 10; // Ajuste aqui os minutos de tolerância
+    let cronometroInspecao;
+    let intervaloSomRepetitivo;
 
-    const botao = document.querySelector('.send');
-    botao.innerText = "Enviando...";
-    botao.disabled = true;
+    function reproduzirBipFisico() {
+      var som = document.getElementById("audio-alarme");
+      if (som) {
+        try {
+          som.pause();
+          som.currentTime = 0; 
+          var playPromise = som.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(function(error) { console.log("Erro de play:", error); });
+          }
+        } catch (e) { console.log("Erro áudio:", e); }
+      }
+    }
 
-    // SOLUÇÃO DO BUG: Ativamos o modo 'no-cors' para o navegador não bloquear a rota com o Google
-    fetch(urlScript, {
-        method: 'POST',
-        mode: 'no-cors', 
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: dadosCorpo.toString()
-    })
-    .then(() => {
-        // No modo no-cors o Google não devolve JSON legível, então tratamos o envio como sucesso direto
-        alert("Inspeção registrada com sucesso!");
-        
-        // Desmarca apenas os botões de rádio (defeitos)
-        const radios = formulario.querySelectorAll('input[type="radio"]');
-        radios.forEach(radio => radio.checked = false);
-        
-        botao.innerText = "Enviar";
-        botao.disabled = false;
-    })
-    .catch(erro => {
-        alert("Erro crítico de conexão.");
-        botao.innerText = "Enviar";
-        botao.disabled = false;
+    function resetarTemporizadorInspecao() {
+      if (cronometroInspecao) clearTimeout(cronometroInspecao);
+      if (intervaloSomRepetitivo) clearInterval(intervaloSomRepetitivo);
+
+      const tempoMilissegundos = TEMPO_LIMITE_MINUTOS * 60 * 1000;
+
+      cronometroInspecao = setTimeout(function() {
+        dispararAvisoVisualESonoro();
+      }, tempoMilissegundos);
+    }
+
+    function dispararAvisoVisualESonoro() {
+      // 1. Toca o primeiro bip imediatamente
+      reproduzirBipFisico();
+      
+      // 2. Cria o loop contínuo a cada 4 segundos (Como o código não congela mais, vai repetir sem parar)
+      intervaloSomRepetitivo = setInterval(reproduzirBipFisico, 30000);
+      
+      // 3. Atualiza o texto e abre o aviso em HTML no ecrã de forma limpa
+      document.getElementById("texto-alerta-dinamico").innerText = "⚠️ ATENÇÃO: Já se passaram " + TEMPO_LIMITE_MINUTOS + " minutos desde a última inspeção!";
+      document.getElementById("meu-modal-alerta").style.display = "flex";
+    }
+
+    function fecharAvisoEPararSom() {
+      // 1. Fecha a janela de aviso em HTML
+      document.getElementById("meu-modal-alerta").style.display = "none";
+      
+      // 2. Desativa totalmente a repetição do som na hora
+      if (intervaloSomRepetitivo) clearInterval(intervaloSomRepetitivo);
+      
+      // 3. Agenda um novo aviso secundário de insistência para daqui a 5 minutos caso continuem sem registrar
+      cronometroInspecao = setTimeout(dispararAvisoVisualESonoro, 5 * 60 * 1000);
+    }
+
+    window.addEventListener("load", function() {
+      resetarTemporizadorInspecao();
     });
-}
-
-</script>
+    </script>
 </body>
 </html>
-
