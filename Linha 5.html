@@ -69,7 +69,7 @@
 
     <div class="head"><h1>Inspeção de qualidade - Linha 5</h1></div>
 
-    <form id="form-inspecao" onsubmit="enviarParaPlanilha(event)">
+    <form id="form-inspecao" onsubmit="enviarParaPlanilha(event)" oninput="salvarRascunhoCampos()">
         <input type="hidden" id="input-linha-producao" name="linha_origem" value="">
         
         <div class="input-garrafa">
@@ -119,12 +119,13 @@
         </div>
         
         <div class="b-space">
-            <a href="index.html" style="text-decoration: none;"><div class="back"><h1>Voltar</h1></div></a>
+            <a href="refugos.html" style="text-decoration: none;"><div class="back"><h1>Voltar</h1></div></a>
             <button type="submit" class="send">Enviar</button>
         </div>
     </form>
 
     <script>
+    // 1. Carrega o nome da linha e restaura o que estava digitado
     document.addEventListener("DOMContentLoaded", function() {
         const linhaGuardada = localStorage.getItem('linhaSelecionada');
         if (linhaGuardada) {
@@ -132,7 +133,21 @@
         } else {
             document.getElementById('input-linha-producao').value = "Linha 5"; 
         }
+
+        // Restaura os dados salvos automaticamente ao abrir a página
+        if(localStorage.getItem('rascunho_garrafa')) document.getElementById('input-garrafa').value = localStorage.getItem('rascunho_garrafa');
+        if(localStorage.getItem('rascunho_preforma')) document.getElementById('input-preforma').value = localStorage.getItem('rascunho_preforma');
+        if(localStorage.getItem('rascunho_turno')) document.getElementById('select-turno').value = localStorage.getItem('rascunho_turno');
+        if(localStorage.getItem('rascunho_nome')) document.getElementById('input-name').value = localStorage.getItem('rascunho_nome');
     });
+
+    // Função que mantém salvo tudo o que está escrito na tela
+    function salvarRascunhoCampos() {
+        localStorage.setItem('rascunho_garrafa', document.getElementById('input-garrafa').value);
+        localStorage.setItem('rascunho_preforma', document.getElementById('input-preforma').value);
+        localStorage.setItem('rascunho_turno', document.getElementById('select-turno').value);
+        localStorage.setItem('rascunho_nome', document.getElementById('input-name').value);
+    }
 
     function enviarParaPlanilha(event) {
         event.preventDefault(); 
@@ -141,7 +156,7 @@
         const formulario = document.getElementById('form-inspecao');
         
         let linhaGuardada = localStorage.getItem('linhaSelecionada');
-        if (!linhaGuardada) { lignhaGuardada = "Linha 5"; }
+        if (!linhaGuardada) { linhaGuardada = "Linha 5"; }
 
         const nomeGarrafa = document.getElementById('input-garrafa').value;
         const numeroPreforma = document.getElementById('input-preforma').value;
@@ -170,9 +185,10 @@
         })
         .then(() => {
             alert("Inspeção registrada com sucesso!");
+            
+            // CORREÇÃO: Removidos os comandos de reset. Os dados continuam fixos na tela e na memória.
             resetarTemporizadorInspecao();
-            const radios = formulario.querySelectorAll('input[type="radio"]');
-            radios.forEach(radio => radio.checked = false);
+            
             botao.innerText = "Enviar";
             botao.disabled = false;
         })
@@ -184,7 +200,7 @@
     }
 
     // CONFIGURAÇÃO DO ALERTA (CRONÓMETRO)
-    const TEMPO_LIMITE_MINUTOS = 10; // Ajuste aqui os minutos de tolerância
+    const TEMPO_LIMITE_MINUTOS = 10; 
     let cronometroInspecao;
     let intervaloSomRepetitivo;
 
@@ -202,6 +218,12 @@
       }
     }
 
+    document.addEventListener('click', function() {
+      if (contextoAudioGlobal && contextoAudioGlobal.state === 'suspended') {
+         contextoAudioGlobal.resume();
+      }
+    }, { once: true });
+
     function resetarTemporizadorInspecao() {
       if (cronometroInspecao) clearTimeout(cronometroInspecao);
       if (intervaloSomRepetitivo) clearInterval(intervaloSomRepetitivo);
@@ -214,25 +236,16 @@
     }
 
     function dispararAvisoVisualESonoro() {
-      // 1. Toca o primeiro bip imediatamente
       reproduzirBipFisico();
+      intervaloSomRepetitivo = setInterval(reproduzirBipFisico, 10000); 
       
-      // 2. Cria o loop contínuo a cada 4 segundos (Como o código não congela mais, vai repetir sem parar)
-      intervaloSomRepetitivo = setInterval(reproduzirBipFisico, 30000);
-      
-      // 3. Atualiza o texto e abre o aviso em HTML no ecrã de forma limpa
       document.getElementById("texto-alerta-dinamico").innerText = "⚠️ ATENÇÃO: Já se passaram " + TEMPO_LIMITE_MINUTOS + " minutos desde a última inspeção!";
       document.getElementById("meu-modal-alerta").style.display = "flex";
     }
 
     function fecharAvisoEPararSom() {
-      // 1. Fecha a janela de aviso em HTML
       document.getElementById("meu-modal-alerta").style.display = "none";
-      
-      // 2. Desativa totalmente a repetição do som na hora
       if (intervaloSomRepetitivo) clearInterval(intervaloSomRepetitivo);
-      
-      // 3. Agenda um novo aviso secundário de insistência para daqui a 5 minutos caso continuem sem registrar
       cronometroInspecao = setTimeout(dispararAvisoVisualESonoro, 5 * 60 * 1000);
     }
 
